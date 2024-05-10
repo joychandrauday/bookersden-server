@@ -54,6 +54,12 @@ async function run() {
       const result=await borrowedBookCollection.find().toArray()
       res.send(result)
     })
+    app.get('/borrowed-book/:id',async(req,res)=>{
+      const id=req.params.id;
+      const query={_id: new ObjectId(id)}
+      const result= await borrowedBookCollection.findOne(query)
+      res.send(result)
+    })
     app.get('/borrowed-books',async(req,res)=>{
       let query={};
       if(req.query?.email){
@@ -81,6 +87,13 @@ async function run() {
       const result=await bookCollection.updateOne(query,updateDoc)
       res.send(result)
     });
+    
+    app.delete('/borrowed-book/:id',async(req,res)=>{
+      const id=req.params.id;
+      const query={_id: new ObjectId(id)}
+      const result=await borrowedBookCollection.deleteOne(query)
+      res.send(result)
+    })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
