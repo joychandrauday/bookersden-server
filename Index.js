@@ -28,7 +28,20 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     const bookCollection=client.db('booksden').collection('allBooks');
-    
+
+
+
+    app.get('/allbooks',async(req,res)=>{
+      const cursor=bookCollection.find()
+      const result=await cursor.toArray();
+      res.send(result)
+    })
+    app.post('/allbooks',async(req,res)=>{
+      const newBook=req.body;
+      console.log(newBook)
+      const result=await bookCollection.insertOne(newBook);
+      res.send(result)
+    })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
