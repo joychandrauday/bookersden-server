@@ -28,6 +28,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     const bookCollection=client.db('booksden').collection('allBooks');
+    const borrowedBookCollection=client.db('booksden').collection('borrowedBooks');
 
 
 
@@ -49,6 +50,37 @@ async function run() {
       const result=await bookCollection.insertOne(newBook);
       res.send(result)
     })
+    app.get('/borrowed-books',async(req,res)=>{
+      const result=await borrowedBookCollection.find().toArray()
+      res.send(result)
+    })
+    app.get('/borrowed-books',async(req,res)=>{
+      let query={};
+      if(req.query?.email){
+        query={email: req.query.email}
+      }
+      const result=await borrowedBookCollection.find(query).toArray();
+      res.send(result)
+    })
+    app.post('/borrowed-books',async(req,res)=>{
+      const borrowedBook=req.body;
+      const result=await borrowedBookCollection.insertOne(borrowedBook);
+      res.send(result)
+    })
+    app.patch("/book/:id", async (req, res) => {
+    
+      const id=req.params.id;
+      const query={_id: new ObjectId(id)}
+      const {book_numbers}=req.body
+      // const result=await bookingCollection.deleteOne(query)
+      const updateDoc={
+        $set:{
+          book_numbers
+        },
+      };
+      const result=await bookCollection.updateOne(query,updateDoc)
+      res.send(result)
+    });
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
