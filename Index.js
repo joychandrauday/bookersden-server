@@ -87,6 +87,26 @@ async function run() {
       const result=await bookCollection.updateOne(query,updateDoc)
       res.send(result)
     });
+    app.put("/book/update/:id", async (req, res) => {
+    
+      const id=req.params.id;
+      const filter={_id: new ObjectId(id)}
+      const options={upsert:true}
+      const updatedDes=req.body;
+      const book={
+        $set:{
+          image: updatedDes.image,
+          book_name: updatedDes.book_name,
+          genre: updatedDes.genre,
+          book_numbers: updatedDes.book_numbers,
+          short_description: updatedDes.short_description,
+          author: updatedDes.author,
+          rating: updatedDes.rating,
+        }
+      }
+      const result=await bookCollection.updateOne(filter,book,options);
+      res.send(result);
+    });
     
     app.delete('/borrowed-book/:id',async(req,res)=>{
       const id=req.params.id;
