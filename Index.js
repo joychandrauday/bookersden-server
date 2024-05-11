@@ -29,6 +29,7 @@ async function run() {
     // await client.connect();
     const bookCollection=client.db('booksden').collection('allBooks');
     const borrowedBookCollection=client.db('booksden').collection('borrowedBooks');
+    const genreCollection=client.db('booksden').collection('genre');
 
 
 
@@ -43,6 +44,24 @@ async function run() {
       const result= await bookCollection.findOne(query)
       res.send(result)
     })
+
+    app.get('/genre',async(req,res)=>{
+      const cursor=genreCollection.find();
+      const result=await cursor.toArray()
+      res.send(result);
+    })
+    app.get('/genre/:name', async (req, res) => {
+      try {
+        const genreName = req.params.name;
+        const query = { genre: genreName };
+        const result = await bookCollection.find(query).toArray();
+        res.send(result);
+      } catch (error) {
+        // Handle error
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+      }
+    });
 
     app.post('/allbooks',async(req,res)=>{
       const newBook=req.body;
