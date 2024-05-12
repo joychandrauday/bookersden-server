@@ -30,6 +30,7 @@ async function run() {
     const bookCollection=client.db('booksden').collection('allBooks');
     const borrowedBookCollection=client.db('booksden').collection('borrowedBooks');
     const genreCollection=client.db('booksden').collection('genre');
+    const librarianCollection=client.db('booksden').collection('librarians');
 
 
 
@@ -69,6 +70,26 @@ async function run() {
       const result=await bookCollection.insertOne(newBook);
       res.send(result)
     })
+    //librarian management
+    app.post('/librarians',async(req,res)=>{
+      const newLibrarian=req.body;
+      const result=await librarianCollection.insertOne(newLibrarian);
+      res.send(result)
+    })
+    app.get('/librarians',async(req,res)=>{
+      const cursor=librarianCollection.find();
+      const result=await cursor.toArray()
+      res.send(result);
+    })
+    app.get('/librarian/:email', async (req, res) => {
+    
+        const librarian = await librarianCollection.findOne({ email: req.params.email });
+    
+        res.json(librarian);
+      
+    });
+    //librarian management
+    
     app.get('/borrowed-books',async(req,res)=>{
       const result=await borrowedBookCollection.find().toArray()
       res.send(result)
