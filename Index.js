@@ -1,8 +1,9 @@
-const express = require('express');
 require('dotenv').config()
+const express = require('express');
 const cors = require('cors');
 const app=express()
 const port=process.env.PORT ||5000;
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 app.use(
   cors({
@@ -16,7 +17,7 @@ app.use(
 app.use(express.json());
 
 
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.nsswhi9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -30,12 +31,14 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    
+
+    //collections in database
     const bookCollection=client.db('booksden').collection('allBooks');
     const borrowedBookCollection=client.db('booksden').collection('borrowedBooks');
     const genreCollection=client.db('booksden').collection('genre');
     const librarianCollection=client.db('booksden').collection('librarians');
-
+    //collections in database
+    
 
 
     app.get('/allbooks',async(req,res)=>{
