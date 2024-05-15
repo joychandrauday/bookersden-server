@@ -9,7 +9,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://bookersden.web.app"],
+    origin: ["http://localhost:5173", "https://bookersden.web.app","https://bookersdensite.web.app"],
     credentials: true,
   })
 );
@@ -28,13 +28,11 @@ const client = new MongoClient(uri, {
 });
 
 const logger = (req, res, next) =>{
-  console.log('log: info', req.method, req.url);
   next();
 }
 
 const varifyToken = (req, res, next) => {
   const Token = req.cookies?.token;
-  console.log('token in middle', Token);
   if (!Token) {
     return res.status(401).send({message: 'unauthorized access.'})
   }
@@ -131,7 +129,6 @@ async function run() {
 
     app.post("/allbooks", async (req, res) => {
       const newBook = req.body;
-      console.log(newBook);
       const result = await bookCollection.insertOne(newBook);
       res.send(result);
     });
@@ -172,10 +169,8 @@ async function run() {
     });
 
     app.get("/borrowed-books-of", logger, varifyToken, async (req, res) => {
-      console.log('token owner',req.user);
       if (req.user.email === req.query.email) {
         let query = {};
-        console.log('cookkiesss', req.cookies);
         if (req.query?.email) {
           query = { email: req.query.email };
         }
