@@ -201,6 +201,12 @@ async function run() {
       const result = await bookCollection.updateOne(query, updateDoc);
       res.send(result);
     });
+    app.delete("/book/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await bookCollection.deleteOne(query);
+      res.send(result);
+    });
 
     app.put("/book/update/:id", async (req, res) => {
       const id = req.params.id;
